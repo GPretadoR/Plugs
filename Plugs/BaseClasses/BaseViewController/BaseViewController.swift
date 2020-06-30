@@ -20,8 +20,8 @@ class BaseViewController: UIViewController {
         SVProgressHUD.setContainerView(self.view)
         
         SVProgressHUD.setMaximumDismissTimeInterval(2.0)
-        SVProgressHUD.setBackgroundColor(AppColors.appMainThemeColor)
-        SVProgressHUD.setForegroundColor(AppColors.white)
+//        SVProgressHUD.setBackgroundColor(AppColors.appMainThemeColor)
+//        SVProgressHUD.setForegroundColor(AppColors.white)
         
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
@@ -45,27 +45,17 @@ class BaseViewController: UIViewController {
     
     func setupReactiveComponents() {}
     
-    func addCloseButton(on vc: UIViewController, action: Selector) {
-        guard let closeImage = R.image.ic_closeDark() else { return }
-        closeImage.resizableImage(withCapInsets: UIEdgeInsets(top: 1, left: closeImage.size.width - 1, bottom: 0, right: 0))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: action)
-    }
-    
     private func navigationBarStyle() {
         guard let navigationController = navigationController else { return }
-        guard let backButtonBackgroundImage = R.image.ic_back() else { return }
+        guard let backButtonBackgroundImage = R.image.ic_back() else { return }    
         backButtonBackgroundImage.resizableImage(withCapInsets: UIEdgeInsets(top: 1, left: backButtonBackgroundImage.size.width - 1, bottom: 0, right: 0))
 
         navigationController.navigationBar.backIndicatorImage = backButtonBackgroundImage
         navigationController.navigationBar.backIndicatorTransitionMaskImage = backButtonBackgroundImage
-        navigationController.navigationBar.tintColor = AppColors.black
-
-        let logo = R.image.yerevanride_logo()
-        let imageView = UIImageView(image: logo)
-        navigationItem.titleView = imageView
+        navigationController.navigationBar.tintColor = .black
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = AppColors.black
+        navigationItem.backBarButtonItem?.tintColor = .black
         navigationItem.backBarButtonItem?.setTitlePositionAdjustment(UIOffset(horizontal: 0.0, vertical: 12.0), for: UIBarMetrics.default)
     }
 }

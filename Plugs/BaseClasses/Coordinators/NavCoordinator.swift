@@ -6,7 +6,7 @@
 //  Copyright © 2020 Garnik Ghazaryan. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class NavCoordinator: BaseCoordinator {
 
