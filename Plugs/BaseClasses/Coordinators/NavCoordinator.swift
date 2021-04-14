@@ -10,17 +10,17 @@ import UIKit
 
 class NavCoordinator: BaseCoordinator {
 
-    private(set) var navigationController: UINavigationController
+    private(set) var navigationController: BaseNavigationController
     weak var navigationPresentingController: UIViewController?
 
-    init(context: Context, root controller: UINavigationController) {
+    init(context: Context, root controller: BaseNavigationController) {
         navigationController = controller
         super.init(context: context, root: controller)
     }
 
-    init(coordinator: NavCoordinator) {
+    init(coordinator: NavCoordinator, viewController: BaseViewController) {
         navigationController = coordinator.navigationController
-        super.init(coordinator: coordinator)
+        super.init(coordinator: coordinator, viewController: viewController)
     }
 
     // MARK: - Overrides
@@ -29,6 +29,7 @@ class NavCoordinator: BaseCoordinator {
 
     func push(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         transaction(with: completion) {
+            navigationController.coordinator = self
             navigationController.pushViewController(viewController, animated: animated)
             navigationPresentingController = viewController
         }
@@ -56,6 +57,7 @@ class NavCoordinator: BaseCoordinator {
         transaction(with: completion) {
             _ = navigationController.popViewController(animated: animated)
             parentCoordinator?.removeChildCoordinator(self)
+            navigationController.coordinator = nil
         }
     }
 
@@ -70,6 +72,7 @@ class NavCoordinator: BaseCoordinator {
                 }
             }
             currentCoordinator.removeAllChildCoordinators()
+            navigationController.coordinator = nil
         }
     }
 
@@ -77,6 +80,7 @@ class NavCoordinator: BaseCoordinator {
         for controller in navigationController.viewControllers {
             if let theController = controller as? T {
                 navigationController.popToViewController(controller, animated: false)
+                navigationController.coordinator = nil
                 return theController
             }
         }
@@ -98,6 +102,7 @@ class NavCoordinator: BaseCoordinator {
     func popToRoot(animated: Bool, completion: (() -> Void)?) {
         transaction(with: completion) {
             navigationController.popToRootViewController(animated: animated)
+            navigationController.coordinator = nil
         }
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 
 protocol Environment {
     var baseURL: URL { get }
-    var socketBaseURL: URL { get }
+//    var socketBaseURL: URL { get }
     var persistentStoreName: String { get }
 //    var gifStorageBaseURL: URL { get }
 //    var isDebug: Bool { get }
@@ -27,7 +27,7 @@ protocol Environment {
 //    var appGroup: String { get }
 //    var appURLScheme: String { get }
  
-//    var googleMapConfig: GoogleConfig { get }
+    var googleMapConfig: GoogleConfig { get }
 //    var googleSignInClientIdConfig: GoogleConfig { get }
 }
 
@@ -63,17 +63,6 @@ enum AppEnvironment: Environment {
         return URL(string: baseURLString)!
     }
     
-    var socketBaseURL: URL {
-        let baseURLString: String = {
-            switch self {
-            case .develop: return "https://apidev2.yerevanride.am"
-            case .production: return "https://api.yerevanride.am"
-            case .qa: return "http://f2a10ad8.ngrok.io"
-            }
-        }()
-        return URL(string: baseURLString)!
-    }
-    
     var persistentStoreName: String {
         "Plugs"
     }
@@ -81,4 +70,17 @@ enum AppEnvironment: Environment {
     public var appGroup: String {
         return "group.com.plug.common"
     }
+    
+    var googleMapConfig: GoogleConfig {
+        switch self {
+        case .develop, .qa:
+            return GoogleConfig(apiKey: "AIzaSyDUfvAL6LGQ80K-jqW1u6dBaL0Zwfnhb3A")
+        case .production:
+            return GoogleConfig(apiKey: "AIzaSyDUfvAL6LGQ80K-jqW1u6dBaL0Zwfnhb3A")
+        }
+    }
+}
+
+struct GoogleConfig {
+    let apiKey: String
 }

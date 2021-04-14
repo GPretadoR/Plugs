@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import GoogleMapsDirections
+
+import CoreLocation
 import ReactiveSwift
-import MapKit
 
 protocol MainViewCoordinatorDelegate: class {
-    
+    func didTapSideMenuButton()
 }
 
 class MainViewViewModel: BaseViewModel {
@@ -20,7 +22,12 @@ class MainViewViewModel: BaseViewModel {
     private let context: Context
     
     var chargerStations = MutableProperty<[ChargerStationObject]>([])
-    var mapAnnotations = MutableProperty<[MKAnnotation]>([])
+    var mapAnnotations = MutableProperty<[String]>([])
+    var drawDirection = Signal<String, Error>.pipe()
+    var moveCameraToLocation = Signal<(position: CLLocationCoordinate2D, zoomLevel: Float), Never>.pipe()
+    
+    private var initialCameraMove = true
+    private let initialZoomLevel: Float = 17.0
     
     init(context: Context, coordinatorDelegate: MainViewCoordinatorDelegate) {
         self.context = context
@@ -29,22 +36,33 @@ class MainViewViewModel: BaseViewModel {
         setupReactiveComponents()
     }
     
+    func showLeftMenuButtonTapped() {
+        coordinatorDelegate?.didTapSideMenuButton()
+    }
+    
+    // MARK: - Private funcs
+    
     private func setupReactiveComponents() {
-        context.services.chargerStationsManagementService
-            .chargerStations
-            .signal
-            .observe(on: UIScheduler())
-            .observeValues { [weak self] chargerStations in
-                self?.createMapAnnotations(chargerStations: chargerStations)
+        context.services.locationService
+            .locationObserver
+            .observeValues { [weak self] location in
+                self?.changeCameraLocation(location: location.coordinate)
         }
     }
     
-    private func createMapAnnotations(chargerStations: [ChargerStationObject]) {
-        var annotation: [MKAnnotation] = []
-        chargerStations.forEach { station in
-            let stationAnnotation = ChargerStationAnnotation(chargerStationObject: station)
-            annotation.append(stationAnnotation)
+    private func changeCameraLocation(location: CLLocationCoordinate2D) {
+        if initialCameraMove {
+            initialCameraMove = false
+            moveCameraToLocation.input.send(value: (location, initialZoomLevel))
+//            GoogleMapsDirections.direction(fromOriginCoordinate: location.googleLocationCoordinate2D, toDestinationCoordinate: GoogleMapsDirections.LocationCoordinate2D(latitude: 40.865164, longitude: 45.133885)) { (response, error) in
+//                print(response)
+//            }
         }
-        mapAnnotations.value = annotation
+    }
+}
+
+extension CLLocationCoordinate2D {
+    var googleLocationCoordinate2D: GoogleMapsDirections.LocationCoordinate2D {
+        GoogleMapsDirections.LocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 }

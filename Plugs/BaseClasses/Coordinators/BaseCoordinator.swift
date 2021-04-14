@@ -7,32 +7,30 @@
 //
 
 import UIKit
-import ReactiveCocoa
-import ReactiveSwift
 
 class BaseCoordinator: Coordinator {
-    
+
     var context: Context?
-    
+
     weak var parentCoordinator: BaseCoordinator?
-    private var childCoordinators: [BaseCoordinator] = []
-    
+    var childCoordinators: [BaseCoordinator] = []
+
     var controller: UIViewController?
-    
+
     init() {}
-    
+
     init(context: Context, root controller: UIViewController?) {
         self.context = context
         self.controller = controller
     }
-    
-    init(coordinator: BaseCoordinator) {
+
+    init(coordinator: BaseCoordinator, viewController: BaseViewController) {
         context = coordinator.context
-        controller = coordinator.controller
+        controller = viewController
     }
-    
+
     func start() {}
-    
+
     func changeCoordinatorsRoot(coordinator: BaseCoordinator) {
         var currentCoordinator = self
         while currentCoordinator.parentCoordinator != nil {
@@ -46,7 +44,7 @@ class BaseCoordinator: Coordinator {
         currentCoordinator.removeAllChildCoordinators()
         currentCoordinator.addChildCoordinator(coordinator)
     }
-    
+
     func present(_ presentable: Presentable, animated: Bool, completion: (() -> Void)? = nil) {
         let vc = presentable.present()
         controller?.present(vc, animated: animated, completion: completion)
@@ -55,7 +53,13 @@ class BaseCoordinator: Coordinator {
     func dismissModal(animated: Bool, completion: (() -> Void)? = nil) {
         guard let controller = controller else { return }
         controller.dismiss(animated: animated, completion: completion)
-        self.parentCoordinator?.removeAllChildCoordinators()
+        parentCoordinator?.removeAllChildCoordinators()
+    }
+
+    func dismissModal(animated: Bool, childCoordinator: BaseCoordinator, completion: (() -> Void)? = nil) {
+        guard let controller = controller else { return }
+        controller.dismiss(animated: animated, completion: completion)
+        parentCoordinator?.removeChildCoordinator(childCoordinator)
     }
 
     func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
@@ -81,7 +85,7 @@ class BaseCoordinator: Coordinator {
             vc.removeFromParent()
         }
     }
-    
+
     func addChildCoordinator(_ coordinator: BaseCoordinator) {
         childCoordinators.append(coordinator)
         coordinator.parentCoordinator = self

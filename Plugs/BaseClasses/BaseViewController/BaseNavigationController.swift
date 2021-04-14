@@ -14,19 +14,23 @@ protocol BaseNavigationControllerDelegate: class {
 }
 
 class BaseNavigationController: UINavigationController {
+    // Very bad workaround
+    weak var coordinator: BaseCoordinator?
 
-    /// Use this delegate to subscribe to popViewController and popToRootViewController actions. In the implementation remove all child coordinators. Remember implement delegate methods in parent coordinator of popped view controller.
-    weak var baseDelegate: BaseNavigationControllerDelegate?
-
+    @discardableResult
     override func popViewController(animated: Bool) -> UIViewController? {
         let poppedVC = super.popViewController(animated: animated)
-        baseDelegate?.didPopViewController(viewController: poppedVC)
+        let parent = coordinator?.parentCoordinator
+        parent?.removeAllChildCoordinators()
+        coordinator = parent
         return poppedVC
     }
-    
+    @discardableResult
     override func popToRootViewController(animated: Bool) -> [UIViewController]? {
         let poppedVCs = super.popToRootViewController(animated: animated)
-        baseDelegate?.didPopToRootViewController(viewControllers: poppedVCs ?? [])
+        let parent = coordinator?.parentCoordinator
+        parent?.removeAllChildCoordinators()
+        coordinator = parent
         return poppedVCs
     }
 }

@@ -24,6 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let context = Current.context
         appCoordinator = AppCoordinator()
+        World.setup()
         let mainViewCoordinator = MainViewCoordinator(context: context, window: window ?? UIWindow(frame: UIScreen.main.bounds))
         appCoordinator?.addChildCoordinator(mainViewCoordinator)
         mainViewCoordinator.start()

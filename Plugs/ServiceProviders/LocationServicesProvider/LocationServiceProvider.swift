@@ -87,7 +87,7 @@ class LocationServiceProvider: NSObject, LocationServices {
 
 extension LocationServiceProvider: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location: CLLocation = locations.last {
+        if let location = locations.last {
             currentLocation.value = location
             locationSignal.send(value: location)
         }
