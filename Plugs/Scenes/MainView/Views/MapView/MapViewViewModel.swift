@@ -11,31 +11,9 @@ import ReactiveSwift
 
 class MapViewViewModel: BaseViewModel {
     
-    var markers = MutableProperty<[GMSMarker]>([])
+    var markers = MutableProperty<[ChargerMarker]>([])
     
-    func configure() {
-        setupReactiveComponents()
-    }
-
-    private func setupReactiveComponents() {
-        Current.context.services.chargerStationsManagementService
-            .chargerStations
-            .signal
-            .observe(on: UIScheduler())
-            .observeValues { [weak self] chargerStations in
-                self?.createMarkers(chargerStations: chargerStations)
-        }
-    }
-
-    func createMarkers(chargerStations: [ChargerStationObject]) {
-        var markers: [GMSMarker] = []
-        chargerStations.forEach { chargerStation in
-            let marker = GMSMarker()
-            marker.position = chargerStation.coordinate2D ?? .init()
-            marker.title = chargerStation.name
-            marker.snippet = chargerStation.city
-            markers.append(marker)
-        }
+    func configure(with markers: [ChargerMarker]) {
         self.markers.value = markers
     }
 }

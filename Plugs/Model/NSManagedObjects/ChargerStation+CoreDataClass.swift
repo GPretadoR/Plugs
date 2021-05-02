@@ -9,7 +9,4 @@
 import Foundation
 import CoreData
 
-
-public class ChargerStation: NSManagedObject {
-
-}
+public class ChargerStation: NSManagedObject {}

@@ -18,9 +18,18 @@ class MainViewController: BaseViewController {
     
     private lazy var leftMenuButton = AppButton {
         $0.backgroundColor = .clear
-        $0.backgroundImage = #imageLiteral(resourceName: "ic_navbar_menu")
+        $0.backgroundImage = #imageLiteral(resourceName: "leftMenuIcon")
         $0.layer.cornerRadius = 0
         $0.addTarget(self, action: #selector(showMenuButtonTapped(_:)), for: .touchUpInside)
+    }
+    
+    private lazy var topLogoImageView = AppImageView {
+        $0.image = #imageLiteral(resourceName: "PlugLogo")
+    }
+    
+    private lazy var footerLogoImageView = AppImageView {
+        $0.image = #imageLiteral(resourceName: "Partners")
+        $0.contentMode = .scaleAspectFit
     }
     
     override func viewDidLoad() {
@@ -33,17 +42,30 @@ class MainViewController: BaseViewController {
         
         mapView = MapView(frame: view.frame)
         mapView.configure()
-//        mapView.delegate = self
+        mapView.delegate = self
 
         view.addSubview(mapView)
         view.sendSubviewToBack(mapView)
         view.addSubview(leftMenuButton)
+        view.addSubview(topLogoImageView)
+        view.addSubview(footerLogoImageView)
         
         leftMenuButton.snp.makeConstraints { make in
             make.width.equalTo(44)
             make.height.equalTo(44)
             make.leading.equalTo(view.snp.leading).inset(8)
             make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(44)
+        }
+        
+        topLogoImageView.snp.makeConstraints { make in
+            make.centerY.equalTo(leftMenuButton.snp.centerY)
+            make.centerX.equalToSuperview()
+        }
+        
+        footerLogoImageView.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safe.bottom).offset(-25)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(250)
         }
     }
     
@@ -55,6 +77,13 @@ class MainViewController: BaseViewController {
             .observeValues { [weak self] mapAnnotations in
 //                self?.mapView.addAnnotations(mapAnnotations)
         }
+        
+        viewModel.markers
+            .signal
+            .observe(on: UIScheduler())
+            .observeValues { [weak self] markers in
+                self?.mapView.viewModel.configure(with: markers)
+            }
         
         viewModel.moveCameraToLocation.output
             .observe(on: UIScheduler())
@@ -77,6 +106,10 @@ class MainViewController: BaseViewController {
             
     }
     
+    override func shouldHideNavigationBar() -> Bool {
+        true
+    }
+    
     // MARK: - Actions
 
     @objc func showMenuButtonTapped(_ sender: Any) {
@@ -84,4 +117,10 @@ class MainViewController: BaseViewController {
     }
     
     // MARK: - Helpers -
+}
+
+extension MainViewController: MapViewDelegate {
+    func didTapAtInfoWindow(of marker: ChargerMarker) {
+        viewModel?.didTapInfoWindow(of: marker)
+    }
 }

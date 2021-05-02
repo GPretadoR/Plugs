@@ -13,10 +13,10 @@ class CommonTableViewCell: BaseView {
 
     var iconImageView = AppImageView {
         $0.backgroundColor = .clear
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .center
     }
     var titleTextLabel = AppLabel {
-        $0.style(textStyle: .bold14px, color: R.color.black()!)
+        $0.style(textStyle: .regular15px, color: R.color.grayTextColor()!)
     }
 
     var accessoryView: UIView? {

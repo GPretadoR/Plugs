@@ -14,23 +14,14 @@ import UIKit
 
 class MapView: BaseView {
     private var mapView: GMSMapView?
-//    private var clusterManager: GMUClusterManager?
-//
-//    private var renderer: GMUGeometryRenderer?
-//    private var kmlParser: GMUKMLParser?
-
-    private var isExpandable = false
 
     private let defaultZoomLevel: Float = 17.0
 
     var viewModel = MapViewViewModel()
-//    weak var delegate: MapViewDelegate?
+    weak var delegate: MapViewDelegate?
 
     func configure() {
         addMapView()
-
-        viewModel.configure()
-
         setupViewModel()
     }
 
@@ -50,10 +41,11 @@ class MapView: BaseView {
     }
     // swiftlint:disable line_length
     private func addMapView() {
-        mapView = GMSMapView(frame: frame) // GMSMapView.map(withFrame: self.frame, camera: camera)        
+        mapView = GMSMapView(frame: frame)
         mapView?.animate(toZoom: defaultZoomLevel)
         mapView?.isMyLocationEnabled = true
         mapView?.settings.myLocationButton = true
+        mapView?.delegate = self
 
         viewModel.markers.signal.observeValues { [weak self] markers in
             markers.forEach { $0.map = self?.mapView }
@@ -76,42 +68,14 @@ class MapView: BaseView {
     }
 }
 
-//    private func isExpandableCluster(clusterManager: GMUClusterManager, cluster: GMUCluster) -> Bool {
-//        var isExpandable = true
-//        let clusters = clusterManager.algorithm.clusters(atZoom: mapView?.maxZoom ?? defaultZoomLevel)
-//
-//        for clusterItem in clusters where clusterItem.count == cluster.count {
-//            if (clusterItem.items.first?.isEqual(cluster.items.first))! {
-//                isExpandable = false
-//                break
-//            }
-//        }
-//        return isExpandable
-//    }
-//}
-//
-//extension MapView: GMUClusterManagerDelegate, GMSMapViewDelegate {
-//    // MARK: - GMUClusterManagerDelegate
-//
-//    func clusterManager(_ clusterManager: GMUClusterManager, didTap clusterItem: GMUClusterItem) -> Bool {
-//        moveCamera(toLocation: clusterItem.position, zoomLevel: mapView?.camera.zoom ?? defaultZoomLevel)
-//        delegate?.didTapClusterItem(clusterItem: clusterItem)
-//        return false
-//    }
-//
-//    func clusterManager(_ clusterManager: GMUClusterManager, didTap cluster: GMUCluster) -> Bool {
-//        var zoomLevel = mapView?.camera.zoom ?? defaultZoomLevel
-//        isExpandable = isExpandableCluster(clusterManager: clusterManager, cluster: cluster)
-//        if isExpandable {
-//            zoomLevel += 1
-//        }
-//        moveCamera(toLocation: cluster.position, zoomLevel: zoomLevel)
-//        return false
-//    }
-//
-//    // MARK: - GMUMapViewDelegate
-//
-//    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-//        delegate?.didTapAtCoordinate(coordinate: coordinate)
-//    }
-//}
+extension MapView: GMSMapViewDelegate {
+    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        guard let chargerMarker = marker as? ChargerMarker else { return }
+        delegate?.didTapAtInfoWindow(of: chargerMarker)
+    }
+    
+    func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
+        return nil
+    }
+    
+}

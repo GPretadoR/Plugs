@@ -17,6 +17,12 @@ class LeftMenuViewController: BaseViewController {
         $0.isScrollEnabled = false
     }
 
+    private lazy var headerView = LeftMenuHeaderView()
+    
+    private lazy var footerImageView = UIImageView {
+        $0.image = #imageLiteral(resourceName: "PlugLogoGrey")
+    }
+
     var viewModel: LeftMenuViewViewModel?
 
     override func viewDidLoad() {
@@ -24,7 +30,7 @@ class LeftMenuViewController: BaseViewController {
 
         leftMenuTableView.dataSource = self
         leftMenuTableView.delegate = self
-//        leftMenuTableView.separatorStyle = .none
+        leftMenuTableView.separatorStyle = .none
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -33,14 +39,28 @@ class LeftMenuViewController: BaseViewController {
     }
 
     override func setupView() {
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .white
         
         view.addSubview(leftMenuTableView)
+        view.addSubview(headerView)
+        view.addSubview(footerImageView)
 
+        headerView.snp.makeConstraints { make in
+            make.top.equalTo(view.safe.top).offset(43)
+            make.leading.equalTo(20)
+            make.trailing.equalTo(-20)
+            make.height.equalTo(78)
+        }
+        
         leftMenuTableView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalTo(headerView.snp.bottom).offset(40)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(footerImageView.snp.top).offset(-20)
+        }
+        
+        footerImageView.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safe.bottom).offset(-34)
+            make.centerX.equalToSuperview()
         }
     }
 
@@ -52,6 +72,10 @@ class LeftMenuViewController: BaseViewController {
     // MARK: - Actions -
 
     // MARK: - Helpers -
+    
+    override func shouldHideNavigationBar() -> Bool {
+        true
+    }
 }
 
 extension LeftMenuViewController: UITableViewDataSource {

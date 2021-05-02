@@ -23,7 +23,9 @@ class MainViewCoordinator: BaseCoordinator {
     
     override func start() {
         guard let rootViewController = controller else { return }
-        window.rootViewController = rootViewController
+        let navigationController = BaseNavigationController(rootViewController: rootViewController)
+        navigationController.modalPresentationStyle = .fullScreen        
+        window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
 }
@@ -39,5 +41,14 @@ extension MainViewCoordinator: MainViewCoordinatorDelegate {
         } else {
             leftMenuCoordinator?.start()
         }
+    }
+    
+    func openDetailsPage(charger: ChargerStationObject) {
+        guard let navController = controller?.navigationController as? BaseNavigationController else { return }
+        let navCoordinator = NavCoordinator(context: context ?? Current.context, root: navController)
+        let chargersDetailCoordinator = ChargerDetailsViewCoordinator(coordinator: navCoordinator,
+                                                                      chargerStation: charger)
+        addChildCoordinator(chargersDetailCoordinator)
+        chargersDetailCoordinator.start()
     }
 }

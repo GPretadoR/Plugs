@@ -29,13 +29,13 @@ class LeftMenuViewViewModel: BaseViewModel {
     private let context: Context
     
     let menuItems = MutableProperty<[LeftMenuCellItemObject]>(
-        [LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "ic_back"),
+        [LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "info"),
                                 titleText: R.string.localizable.leftMenuItemAboutusText.localized()),
-         LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "ic_back"),
+         LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "battery-charging"),
                                 titleText: R.string.localizable.leftMenuItemDonorsText.localized()),
-         LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "ic_back"),
+         LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "helpIcon"),
                                 titleText: R.string.localizable.leftMenuItemFaqText.localized()),
-         LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "ic_back"),
+         LeftMenuCellItemObject(icon: #imageLiteral(resourceName: "addCharger"),
                                 titleText: R.string.localizable.leftMenuItemAddstationText.localized())]
     )
 

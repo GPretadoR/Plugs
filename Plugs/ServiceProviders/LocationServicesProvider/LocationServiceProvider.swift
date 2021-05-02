@@ -13,6 +13,8 @@ class LocationServiceProvider: NSObject, LocationServices {
     
     var currentLocation = MutableProperty<CLLocation>(CLLocation())
     var (locationObserver, locationSignal) = Signal<CLLocation, Never>.pipe()
+    var (didEnterRegionObserver, didEnterRegionSignal) = Signal<CLCircularRegion, Never>.pipe()
+    var (didExitRegionObserver, didExitRegionSignal) = Signal<CLCircularRegion, Never>.pipe()
     var (locationAuthorizationObserver, locationAuthorizationSignal) = Signal<CLAuthorizationStatus, Never>.pipe()
     
     var pausesLocationUpdatesAutomatically: Bool {
@@ -24,11 +26,7 @@ class LocationServiceProvider: NSObject, LocationServices {
         set { locationManager.allowsBackgroundLocationUpdates = newValue }
         get { return locationManager.allowsBackgroundLocationUpdates }
     }
-    
-    var isDeferredLocationUpdateAvailable: Bool {
-        return CLLocationManager.deferredLocationUpdatesAvailable()
-    }
-    
+
     private let kLocationDistanceFilter: CLLocationDistance = 10
     
     private var locationManager = CLLocationManager()
@@ -40,7 +38,16 @@ class LocationServiceProvider: NSObject, LocationServices {
     
     // MARK: - Public functions
     func updateLocation() {
-        locationManager.requestLocation()
+        locationManager.requestLocation()        
+    }
+    
+    func startMonitoringRegions(regions: [CLCircularRegion]) {
+        regions.forEach { locationManager.startMonitoring(for: $0) }
+        print("# of monitored regions", locationManager.monitoredRegions.count)
+    }
+    
+    func stopMonitoringRegions(regions: [CLCircularRegion]) {
+        regions.forEach { locationManager.stopMonitoring(for: $0) }
     }
     
     private func enableUpdateLocation() {
@@ -62,10 +69,11 @@ class LocationServiceProvider: NSObject, LocationServices {
     // MARK: - Private functions
     
     private func configure() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-//        locationManager.activityType = .fitness
-//        locationManager.distanceFilter = kLocationDistanceFilter
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.delegate = self
+        locationManager.startMonitoringSignificantLocationChanges()
+        pausesLocationUpdatesAutomatically = true
+        allowsBackgroundLocationUpdates = true
         requestAuthorizationForLocationService()
     }
     
@@ -76,7 +84,6 @@ class LocationServiceProvider: NSObject, LocationServices {
         case .restricted, .denied:
             disableUpdateLocation()
         case .authorizedWhenInUse, .authorizedAlways:
-            // Enable location features
             break
         @unknown default:
             fatalError()
@@ -115,4 +122,16 @@ extension LocationServiceProvider: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {}
+    
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if let circularRegion = region as? CLCircularRegion {
+            didEnterRegionSignal.send(value: circularRegion)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if let circularRegion = region as? CLCircularRegion {
+            didExitRegionSignal.send(value: circularRegion)
+        }
+    }
 }

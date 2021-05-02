@@ -27,7 +27,7 @@ class LeftMenuViewCoordinator: BaseCoordinator {
         var settings = SideMenuSettings()
         settings.presentationStyle = sideMenuPresentationStyle
         settings.statusBarEndAlpha = 0
-        settings.menuWidth = 322
+        settings.menuWidth = 288
         settings.dismissWhenBackgrounded = true
         settings.dismissOnPush = true
         settings.dismissOnPresent = true

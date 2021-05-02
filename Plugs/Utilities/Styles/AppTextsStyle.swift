@@ -13,40 +13,48 @@ struct TextAttributes {
     var textColor: UIColor?
 }
 
-enum TextsStyles {
+enum TextsStyles: Int {
     case none
 
     // Bold
-    case bold10px
-    case bold11px
-    case bold12px
-    case bold13px
-    case bold14px
-    case bold15px
-    case bold16px
-    case bold18px
-    case bold20px
-    case bold24px
-    case bold30px
-    case bold36px
-    case bold40px
+    case bold10px = 10
+    case bold11px = 11
+    case bold12px = 12
+    case bold13px = 13
+    case bold14px = 14
+    case bold15px = 15
+    case bold16px = 16
+    case bold18px = 18
+    case bold20px = 20
+    case bold24px = 24
+    case bold30px = 30
+    case bold36px = 36
+    case bold40px = 40
 
     // Medium
-    case medium40px
+    case medium40px = 540
 
     // Regular
-    case regular9px
-    case regular11px
-    case regular12px
-    case regular13px
-    case regular14px
-    case regular15px
-    case regular16px
-    case regular18px
-    case regular20px
+    case regular9px = 1009
+    case regular11px = 1011
+    case regular12px = 1012
+    case regular13px = 1013
+    case regular14px = 1014
+    case regular15px = 1015
+    case regular16px = 1016
+    case regular18px = 1018
+    case regular20px = 1020
 
     private var defaultFont: UIFont {
         UIFont.systemFont(ofSize: 17)
+    }
+    
+    private var mediumSizeDelta: Int {
+        500
+    }
+    
+    private var regularSizeDelta: Int {
+        1000
     }
 
     var style: TextAttributes {
@@ -87,147 +95,37 @@ enum TextsStyles {
     }
 
     private func styleBold(style: TextsStyles) -> TextAttributes {
-        switch style {
-        default:
-            return TextAttributes(font: defaultFont, textColor: R.color.black())
-        }
+        return makeBold(of: CGFloat(style.rawValue))
     }
 
     private func styleMedium(style: TextsStyles) -> TextAttributes {
-        switch style {
-        default:
-            return TextAttributes(font: defaultFont, textColor: R.color.black())
-        }
+        return makeMedium(of: CGFloat(style.rawValue - mediumSizeDelta))
     }
 
     private func styleRegular(style: TextsStyles) -> TextAttributes {
-        switch style {
-        default:
-            return TextAttributes(font: defaultFont, textColor: R.color.black())
-        }
+        return makeRegular(of: CGFloat(style.rawValue - regularSizeDelta))
     }
 
     // MARK: - Bold
-    /*
-    private func makeBold10px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 10) ?? defaultFont
+    
+    private func makeBold(of size: CGFloat) -> TextAttributes {
+        let font = R.font.interBold(size: size) ?? defaultFont
         return TextAttributes(font: font)
     }
-
-    private func makeBold11px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 11) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold12px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 12) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold13px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 13) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold14px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 14) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold15px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 15) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold16px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 16) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold18px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 18) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold20px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 20) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold24px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 24) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold30px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 30) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold36px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 36) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeBold40px() -> TextAttributes {
-        let font = R.font.sfProTextBold(size: 40) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
+    
     // MARK: - Regular
 
-    private func makeRegular9px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 9) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular11px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 11) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular12px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 12) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular13px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 13) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular14px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 14) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular15px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 15) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular16px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 16) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular18px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 18) ?? defaultFont
-        return TextAttributes(font: font)
-    }
-
-    private func makeRegular20px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 20) ?? defaultFont
+    private func makeRegular(of size: CGFloat) -> TextAttributes {
+        let font = R.font.interRegular(size: size) ?? defaultFont
         return TextAttributes(font: font)
     }
 
     // MARK: - Medium
-
-    private func makeMedium40px() -> TextAttributes {
-        let font = R.font.sfProTextRegular(size: 40) ?? defaultFont
+     
+    private func makeMedium(of size: CGFloat) -> TextAttributes {
+        let font = R.font.interMedium(size: size) ?? defaultFont
         return TextAttributes(font: font)
     }
-     */
 }
 
 extension TextsStyles {

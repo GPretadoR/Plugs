@@ -35,26 +35,13 @@ class ChargerStationsManagementService {
     
     private func fetchFromFirebase() {
         fireStoreService.fetchData(collection: "stations").observe(on: scheduler)
-            .on { [weak self] data in
-                var chargerStations: [ChargerStationObject] = []
-                data.forEach { (chargerStation) in
-                    var station = chargerStation
-                    guard let geoPoint = station["coordinates"] as? GeoPoint else { return }
-                    let coordinatesArray = [geoPoint.latitude, geoPoint.longitude]
-                    station["coordinates"] = coordinatesArray
-                    let decoder = JSONDecoder()
-                    do {
-                        let stationData = try JSONSerialization.data(withJSONObject: station, options: .prettyPrinted)
-                        let stationObject = try decoder.decode(ChargerStationObject.self, from: stationData)
-                        chargerStations.append(stationObject)
-                    } catch {
-                        print(error)
-                    }
-                }
-                self?.saveToCoreData(chargerStations: chargerStations)
-
-        }.on(completed: { [weak self] in
-            self?.getChargers()
+            .on(value: { [weak self] data in
+                let chargerStations = data.map { ChargerStationObject(with: $0) }
+                self?.chargerStations.value = chargerStations
+                self?.saveToCoreData(chargerStations: chargerStations)                
+            })
+            .on(completed: { [weak self] in
+                self?.getChargers()
         }).start()
     }
     
@@ -85,7 +72,7 @@ class ChargerStationsManagementService {
                 let stationObjects = stations.compactMap { (station) -> ChargerStationObject? in
                     ChargerStationObject(chargerObject: station)
                 }
-                self?.chargerStations.value = stationObjects
+//                self?.chargerStations.value = stationObjects
             }).start()
     }
 }

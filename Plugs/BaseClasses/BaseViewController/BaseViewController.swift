@@ -34,7 +34,17 @@ class BaseViewController: UIViewController {
         super.loadView()
         setupView()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = shouldHideNavigationBar()
+    }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.isNavigationBarHidden = !shouldHideNavigationBar()
+    }
+    
     func setupView() {
         setupTexts()
     }
@@ -44,6 +54,10 @@ class BaseViewController: UIViewController {
     func setupTexts() {}
     
     func setupReactiveComponents() {}
+    
+    func shouldHideNavigationBar() -> Bool { false }
+    
+    // MARK: - Private func
     
     private func navigationBarStyle() {
         guard let navigationController = navigationController else { return }
