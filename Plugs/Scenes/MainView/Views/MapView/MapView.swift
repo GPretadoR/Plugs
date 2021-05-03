@@ -39,7 +39,7 @@ class MapView: BaseView {
     private func setupViewModel() {
         
     }
-    // swiftlint:disable line_length
+
     private func addMapView() {
         mapView = GMSMapView(frame: frame)
         mapView?.animate(toZoom: defaultZoomLevel)
@@ -47,11 +47,11 @@ class MapView: BaseView {
         mapView?.settings.myLocationButton = true
         mapView?.delegate = self
 
-        viewModel.markers.signal.observeValues { [weak self] markers in
+        viewModel.markers.signal
+            .observeValues { [weak self] markers in
             markers.forEach { $0.map = self?.mapView }
         }
-        
-        addPolyLine(encodedString: "ixetFketnGrQoMjCxEzC`J@s@gIyUoBoKeBgTgGaOsGqGuIyEyOoEiH{@iBqDwN_H}G|BwUgTcGkHiDaMeKiOsBeI~Bqh@{B_LaN{UsVoZya@g`@id@aQ_NI}Cd@yC`@_D^w[vFaZtO_TzAgPuCo\\e^}d@}nAsRkf@oJqPoZsVsd@yp@oO}G_I_A{_@Zw[eCw\\oKyqAix@ceAip@up@ua@sc@{]mq@wk@aPmEaObAgm@lP_x@rMyc@dG_KrBuGkA}DeFaBkJqCuJuFkDsJe@eF_DmCmKoAuQcEeFcMyCuHqDsKgX_H_JgN\\mMY{f@gZoWaQuWuXcd@wf@uqAqyAmp@saAcg@yt@iY}TcpAmn@ar@{`@afAov@sPiNiJwQue@sfAka@{v@uzAwnCkv@{oA_z@aaB{m@a_BsMw^oQqy@{`@mjBiRajAaJ_c@kZgaAuM}c@gHam@L_u@dUq_DdMueBMkQcTwdBwFcPca@ml@{lA}eB}_@}ZuXaY{HqC_]vEo\\|RiZ~}@sLfm@_Ot^{LzOmNdL}QdDyIlFuKbM}MhZkOzMwqAnXk`@vNyR|]cw@voAyMh^wQbY}NjUiJrXwPvOgEdEiBpHiCz\\uK|YkFp_@cCpRmBt@i}Apj@e]`M{MbJ_T|^cHjN{C|BqCWY|ADnJqGhDkLtO_N~AIhHeBtCmHLvLhCMl@yGcAgDpAn@bIgAbDqPjFnBh@lS}EiAbAkUzHqHtKsFtFaE}@qFxLwKa@oFwBxInGjKbAxOqHx@HwGnPwRVgMiAgKlAqZ|DsL]oZ}Jo^BoJjAeDeD_BqWeCiOeCsVkDqL{GyHoD_AmKxAeR|CaTbGuJRkDdBuCiByD_He@AiH{FcFgEyFHoJAuEmC}QoOw^uv@oL_m@mEk`@c@{WwFsm@mAaRgJub@sSo]mYqSuOgG{C{@aMVsGwSg@wTkDwHx@gQ`FmO~@uO`EwUzKwf@jB{JeDgZn@yNqBc[aCmg@yCg]n@qd@bDuXxCsPjUib@lDkW_Cec@bDiOoEyo@lAyGdEcJpGePk@uGaHkMuGYkVsJgGHyD_AsF_H`ByDhD}PhBa\\uDg[wImXqIyPqDeVqGcJoImFeDqKqHyHwEyBoJM_J_CqQwJsEcNqHsa@yGcK}YiAmFkCkDwGuN_`@eCuGeIyGkSeTgBqYOgWcGkP{M_UqMwe@iDaPwDeDyMqKcJ}Lg[oIcYr@uMwKk_@{@wVmHcNqBeL{CiLlBaI^qHkFwFgFiDKeMfDoEcA}CeGd@_UiIuJsEwSeNuV")
+
         if let mapView = mapView {
             addSubview(mapView)
             sendSubviewToBack(mapView)

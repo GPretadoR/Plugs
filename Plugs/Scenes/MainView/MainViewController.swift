@@ -34,7 +34,6 @@ class MainViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
     override func setupView() {
@@ -71,12 +70,6 @@ class MainViewController: BaseViewController {
     
     override func setupViewModel() {
         guard let viewModel = viewModel else { return }
-        viewModel.mapAnnotations
-            .signal
-            .observe(on: UIScheduler())
-            .observeValues { [weak self] mapAnnotations in
-//                self?.mapView.addAnnotations(mapAnnotations)
-        }
         
         viewModel.markers
             .signal
@@ -85,25 +78,13 @@ class MainViewController: BaseViewController {
                 self?.mapView.viewModel.configure(with: markers)
             }
         
-        viewModel.moveCameraToLocation.output
+        viewModel.moveCameraToLocation
+            .signal
             .observe(on: UIScheduler())
             .take(duringLifetimeOf: self)
             .observeValues { [weak self] (location, zoomLevel) in
                 self?.mapView.moveCamera(toLocation: location, zoomLevel: zoomLevel)
             }
-        
-        viewModel.drawDirection
-            .output
-            .observe(on: UIScheduler())
-            .observeResult { [weak self] result in
-                switch result {
-                case .success(let polyline): break
-                
-                case .failure(let error):
-                    print("direction found error", error)
-                }
-            }
-            
     }
     
     override func shouldHideNavigationBar() -> Bool {

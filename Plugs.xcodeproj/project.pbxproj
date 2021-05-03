@@ -54,6 +54,8 @@
 		8D4980FC2624A64B00DA7E81 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4980F82624A64B00DA7E81 /* BaseView.swift */; };
 		8D4980FD2624A64B00DA7E81 /* ChargeProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4980F92624A64B00DA7E81 /* ChargeProgressView.swift */; };
 		8D4981082624AEC600DA7E81 /* MapViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4981072624AEC600DA7E81 /* MapViewViewModel.swift */; };
+		8D8C6244263F1D4E0043B61B /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8C6243263F1D4E0043B61B /* SeparatorView.swift */; };
+		8D8C6248263F20840043B61B /* ChargerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8C6247263F20840043B61B /* ChargerInfoView.swift */; };
 		8DA16F97263083BE00377878 /* GeoRegionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA16F96263083BE00377878 /* GeoRegionObject.swift */; };
 		8DA16FBF2630884E00377878 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA16FBE2630884E00377878 /* JSONSerializable.swift */; };
 		8DA1701B2637263600377878 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8DA170122637263600377878 /* Inter-Medium.ttf */; };
@@ -190,6 +192,8 @@
 		8D4980F82624A64B00DA7E81 /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		8D4980F92624A64B00DA7E81 /* ChargeProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChargeProgressView.swift; sourceTree = "<group>"; };
 		8D4981072624AEC600DA7E81 /* MapViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewViewModel.swift; sourceTree = "<group>"; };
+		8D8C6243263F1D4E0043B61B /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
+		8D8C6247263F20840043B61B /* ChargerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargerInfoView.swift; sourceTree = "<group>"; };
 		8DA16F96263083BE00377878 /* GeoRegionObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoRegionObject.swift; sourceTree = "<group>"; };
 		8DA16FBE2630884E00377878 /* JSONSerializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSerializable.swift; sourceTree = "<group>"; };
 		8DA170122637263600377878 /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
@@ -433,6 +437,7 @@
 				8DB3A8B12627391000751F49 /* BaseTextFields */,
 				8DB3A8662627368600751F49 /* GenericCell */,
 				8D4980F62624A64B00DA7E81 /* AppView.swift */,
+				8D8C6243263F1D4E0043B61B /* SeparatorView.swift */,
 				8D4980F82624A64B00DA7E81 /* BaseView.swift */,
 				8D4980F92624A64B00DA7E81 /* ChargeProgressView.swift */,
 			);
@@ -448,6 +453,14 @@
 				8D4981072624AEC600DA7E81 /* MapViewViewModel.swift */,
 			);
 			path = MapView;
+			sourceTree = "<group>";
+		};
+		8D8C624B263F20890043B61B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8D8C6247263F20840043B61B /* ChargerInfoView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		8DA170112637263600377878 /* Fonts */ = {
@@ -739,6 +752,7 @@
 		8DBAA1422629E7C80063F079 /* ChargerDetailView */ = {
 			isa = PBXGroup;
 			children = (
+				8D8C624B263F20890043B61B /* Views */,
 				8D01D43526286EC9008B5E31 /* ChargerDetailsViewController.swift */,
 				8D01D43B26286F0F008B5E31 /* ChargerDetailsViewViewModel.swift */,
 				8D01D43F26286F2E008B5E31 /* ChargerDetailsViewCoordinator.swift */,
@@ -1108,6 +1122,7 @@
 				8D4981082624AEC600DA7E81 /* MapViewViewModel.swift in Sources */,
 				8DB655CF24A750B70075A330 /* NavCoordinator.swift in Sources */,
 				8D35165B26273AF80028DE7B /* CellItemObject.swift in Sources */,
+				8D8C6244263F1D4E0043B61B /* SeparatorView.swift in Sources */,
 				8DB6569A24A8D0FD0075A330 /* ChargerStation+CoreDataProperties.swift in Sources */,
 				8D3B19E324A9295F00B0629E /* HTMLBuilder.swift in Sources */,
 				8DB3A85A2627356500751F49 /* LeftMenuViewController.swift in Sources */,
@@ -1179,6 +1194,7 @@
 				8DB655EF24A753E40075A330 /* Context.swift in Sources */,
 				8DB656A824A8D2A50075A330 /* DatabaseServiceProvider.swift in Sources */,
 				8D4980FA2624A64B00DA7E81 /* AppView.swift in Sources */,
+				8D8C6248263F20840043B61B /* ChargerInfoView.swift in Sources */,
 				8D01D446262876D2008B5E31 /* MapViewDelegate.swift in Sources */,
 				8D075D64263730BF00112BA0 /* UIView+Extension.swift in Sources */,
 				8DB655D024A750B70075A330 /* BaseCoordinator.swift in Sources */,

@@ -6,11 +6,13 @@
 //  Copyright © 2021 Garnik Ghazaryan. All rights reserved.
 //
 
+import CoreLocation
 import Foundation
 import ReactiveSwift
 
 protocol ChargerDetailViewCoordinatorDelegate: class {
     func didTapSideMenuButton()
+    func openDirections(to coordinate: CLLocationCoordinate2D)
 }
 
 class ChargerDetailsViewViewModel: BaseViewModel {
@@ -35,4 +37,13 @@ class ChargerDetailsViewViewModel: BaseViewModel {
         self.charger.value = chargerStation
     }
     
+    func getChargerImage(urlString: String) -> UIImage? {
+        guard let url = URL(string: urlString) else { return nil }
+        let data = try? Data(contentsOf: url)
+        return UIImage(data: data ?? Data())
+    }
+    
+    func didTapGetDirectionButton() {
+        coordinatorDelegate?.openDirections(to: charger.value?.coordinate2D ?? CLLocationCoordinate2D())
+    }
 }

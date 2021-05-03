@@ -33,6 +33,10 @@ enum TextsStyles: Int {
 
     // Medium
     case medium40px = 540
+    
+    // Semi Bold
+    
+    case semiBold22px = 622
 
     // Regular
     case regular9px = 1009
@@ -55,6 +59,10 @@ enum TextsStyles: Int {
     
     private var regularSizeDelta: Int {
         1000
+    }
+    
+    private var semiBoldSizeDelta: Int {
+        600
     }
 
     var style: TextAttributes {
@@ -81,6 +89,8 @@ enum TextsStyles: Int {
             return styleBold(style: style)
         case .medium40px:
             return styleMedium(style: style)
+        case .semiBold22px:
+            return styleSemiBold(style: style)
         case .regular9px,
              .regular11px,
              .regular12px,
@@ -105,6 +115,10 @@ enum TextsStyles: Int {
     private func styleRegular(style: TextsStyles) -> TextAttributes {
         return makeRegular(of: CGFloat(style.rawValue - regularSizeDelta))
     }
+    
+    private func styleSemiBold(style: TextsStyles) -> TextAttributes {
+        return makeSemiBold(of: CGFloat(style.rawValue - semiBoldSizeDelta))
+    }
 
     // MARK: - Bold
     
@@ -124,6 +138,13 @@ enum TextsStyles: Int {
      
     private func makeMedium(of size: CGFloat) -> TextAttributes {
         let font = R.font.interMedium(size: size) ?? defaultFont
+        return TextAttributes(font: font)
+    }
+    
+    // MARK: - Semi-bold
+    
+    private func makeSemiBold(of size: CGFloat) -> TextAttributes {
+        let font = R.font.interSemiBold(size: size) ?? defaultFont
         return TextAttributes(font: font)
     }
 }

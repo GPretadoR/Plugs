@@ -6,7 +6,9 @@
 //  Copyright © 2021 Garnik Ghazaryan. All rights reserved.
 //
 
+import CoreLocation
 import Foundation
+import UIKit
 
 class ChargerDetailsViewCoordinator: NavCoordinator {
 
@@ -28,6 +30,23 @@ class ChargerDetailsViewCoordinator: NavCoordinator {
 
 extension ChargerDetailsViewCoordinator: ChargerDetailViewCoordinatorDelegate {
     func didTapSideMenuButton() {
+        
+    }
+    
+    func openDirections(to coordinate: CLLocationCoordinate2D) {
+        let stringURL = "comgooglemaps://"
+        let lat = coordinate.latitude
+        let lng = coordinate.longitude
+
+        if UIApplication.shared.canOpenURL(URL(string: stringURL)!) {
+            if let url = URL(string: "comgooglemaps://?saddr=&daddr=\(lat),\(lng)&directionsmode=driving") {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        } else {
+            if let destinationURL = URL(string: "https://www.google.co.in/maps/dir/?saddr=&daddr=\(lat),\(lng)&directionsmode=driving") {
+                UIApplication.shared.open(destinationURL, options: [:], completionHandler: nil)
+            }
+        }
         
     }
 }

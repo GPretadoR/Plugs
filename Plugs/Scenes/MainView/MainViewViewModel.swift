@@ -26,7 +26,7 @@ class MainViewViewModel: BaseViewModel {
     var mapAnnotations = MutableProperty<[String]>([])
     
     var drawDirection = Signal<String, Error>.pipe()
-    var moveCameraToLocation = Signal<(position: CLLocationCoordinate2D, zoomLevel: Float), Never>.pipe()
+    var moveCameraToLocation = MutableProperty<(position: CLLocationCoordinate2D, zoomLevel: Float)>((position: CLLocationCoordinate2D(), zoomLevel: 7.0))
     
     var markers = MutableProperty<[ChargerMarker]>([])
     var chargers: [ChargerStationObject] = []
@@ -84,14 +84,7 @@ class MainViewViewModel: BaseViewModel {
             .signal
             .observe(on: UIScheduler())
             .observeValues { [weak self] chargerStations in
-                self?.chargers = chargerStations
-//                chargerStations.forEach { print($0.coordinates) }
-                self?.markers.value = self?.createMarkers(chargerStations: chargerStations) ?? []
-                var geoRegions = chargerStations.compactMap { $0.geoRegion }
-                let testRegion = GeoRegionObject(identifier: "Garnik", coordinates: GeoPoint(latitude: 40.192165, longitude: 44.531235), radius: 200.0)
-                geoRegions.append(testRegion)
-                self?.allGeoRegionObjects = geoRegions
-                self?.calculateRegions(geoRegions: geoRegions)
+                self?.handleChargersResponse(chargerStations: chargerStations)
         }
     }
     
@@ -115,10 +108,7 @@ class MainViewViewModel: BaseViewModel {
     private func changeCameraLocation(location: CLLocationCoordinate2D) {
         if initialCameraMove {
             initialCameraMove = false
-            moveCameraToLocation.input.send(value: (location, initialZoomLevel))
-//            GoogleMapsDirections.direction(fromOriginCoordinate: location.googleLocationCoordinate2D, toDestinationCoordinate: GoogleMapsDirections.LocationCoordinate2D(latitude: 40.865164, longitude: 45.133885)) { (response, error) in
-//                print(response)
-//            }
+            moveCameraToLocation.value = (location, initialZoomLevel)
         }
     }
     
@@ -127,6 +117,16 @@ class MainViewViewModel: BaseViewModel {
         if timeDiff > 15 * 60 {
             // Do request to firebases
         }
+    }
+    
+    private func handleChargersResponse(chargerStations: [ChargerStationObject]) {
+        chargers = chargerStations
+        markers.value = createMarkers(chargerStations: chargerStations)
+        var geoRegions = chargerStations.compactMap { $0.geoRegion }
+        let testRegion = GeoRegionObject(identifier: "Garnik", coordinates: GeoPoint(latitude: 40.192165, longitude: 44.531235), radius: 200.0)
+        geoRegions.append(testRegion)
+        allGeoRegionObjects = geoRegions
+        calculateRegions(geoRegions: geoRegions)
     }
 }
 

@@ -67,11 +67,17 @@ class AppButton: BaseButton {
             makeBorderedButton()
         case .borderedWithIcon:
             makeBorderedWithIconButton()
+        case .filled:
+            makeFilled()
         default:
             break
         }
     }
 
+    private func makeFilled() {
+        contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 5.0, bottom: 0.0, right: 5.0)
+    }
+    
     private func makeBorderedButton() {
         borderWidth = 1.5
         contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 5.0, bottom: 0.0, right: 5.0)
