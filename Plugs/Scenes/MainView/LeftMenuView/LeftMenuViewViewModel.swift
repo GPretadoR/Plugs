@@ -15,12 +15,11 @@ protocol LeftMenuViewCoordinatorDelegate: class {
 }
 
 enum LeftMenuCellType: Int {
-    case wallet = 0
-    case rideHistory
-    case howToRide
+    case aboutUs = 0
+    case donors
+    case faq
+    case addStation
     case settings
-    case helpAndSupport
-    case reportAProblem
 }
 
 class LeftMenuViewViewModel: BaseViewModel {

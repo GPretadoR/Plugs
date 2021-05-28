@@ -46,7 +46,6 @@ class MapView: BaseView {
         mapView?.isMyLocationEnabled = true
         mapView?.settings.myLocationButton = true
         mapView?.delegate = self
-
         viewModel.markers.signal
             .observeValues { [weak self] markers in
             markers.forEach { $0.map = self?.mapView }

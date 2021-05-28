@@ -36,18 +36,25 @@ class LocationServiceProvider: NSObject, LocationServices {
         configure()
     }
     
+    var monitoredRegions: Set<CLRegion> {
+        locationManager.monitoredRegions
+    }
+    
     // MARK: - Public functions
     func updateLocation() {
         locationManager.requestLocation()        
     }
     
-    func startMonitoringRegions(regions: [CLCircularRegion]) {
+    func startMonitoringRegions(regions: [CLCircularRegion]) {        
         regions.forEach { locationManager.startMonitoring(for: $0) }
-        print("# of monitored regions", locationManager.monitoredRegions.count)
     }
     
     func stopMonitoringRegions(regions: [CLCircularRegion]) {
         regions.forEach { locationManager.stopMonitoring(for: $0) }
+    }
+    
+    func clearMonitoredRegions() {
+        locationManager.monitoredRegions.forEach { locationManager.stopMonitoring(for: $0) }
     }
     
     private func enableUpdateLocation() {

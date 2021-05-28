@@ -6,6 +6,7 @@
 //  Copyright © 2020 Garnik Ghazaryan. All rights reserved.
 //
 
+import FirebaseFirestore.FIRGeoPoint
 import ReactiveSwift
 
 class FirestoreManagementService {
@@ -18,5 +19,13 @@ class FirestoreManagementService {
     
     func fetchData(collection: String) -> SignalProducer<[[String: Any]], Error> {
         return serviceProvider.getData(from: collection)
+    }
+    
+    func sendData(fields: [String: Any]) -> SignalProducer<String, Error> {
+        return serviceProvider.addData(to: "visits", fields: fields)
+    }
+    
+    func updateData(of collection: String, in document: String, with fields: [String: Any]) -> SignalProducer<String, Error> {
+        return serviceProvider.updateData(to: collection, with: document, fields: fields)
     }
 }

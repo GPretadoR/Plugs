@@ -18,10 +18,6 @@ class LeftMenuViewController: BaseViewController {
     }
 
     private lazy var headerView = LeftMenuHeaderView()
-    
-    private lazy var footerImageView = UIImageView {
-        $0.image = #imageLiteral(resourceName: "PlugLogoGrey")
-    }
 
     var viewModel: LeftMenuViewViewModel?
 
@@ -43,7 +39,6 @@ class LeftMenuViewController: BaseViewController {
         
         view.addSubview(leftMenuTableView)
         view.addSubview(headerView)
-        view.addSubview(footerImageView)
 
         headerView.snp.makeConstraints { make in
             make.top.equalTo(view.safe.top).offset(43)
@@ -55,23 +50,18 @@ class LeftMenuViewController: BaseViewController {
         leftMenuTableView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom).offset(40)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(footerImageView.snp.top).offset(-20)
+            make.bottom.equalTo(view.safe.bottom).offset(-20)
         }
-        
-        footerImageView.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safe.bottom).offset(-34)
-            make.centerX.equalToSuperview()
-        }
-    }
-
-    override func setupViewModel() {
-        guard let viewModel = viewModel else { return }
 
     }
-
+    
     // MARK: - Actions -
 
     // MARK: - Helpers -
+    
+    override func shouldHaveBottomLogo() -> Bool {
+        true
+    }
     
     override func shouldHideNavigationBar() -> Bool {
         true

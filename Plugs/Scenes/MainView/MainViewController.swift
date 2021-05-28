@@ -52,7 +52,7 @@ class MainViewController: BaseViewController {
         leftMenuButton.snp.makeConstraints { make in
             make.width.equalTo(44)
             make.height.equalTo(44)
-            make.leading.equalTo(view.snp.leading).inset(8)
+            make.leading.equalTo(view.snp.leading).inset(16)
             make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(44)
         }
         
@@ -69,6 +69,7 @@ class MainViewController: BaseViewController {
     }
     
     override func setupViewModel() {
+        super.setupViewModel()
         guard let viewModel = viewModel else { return }
         
         viewModel.markers

@@ -38,11 +38,7 @@ class ChargerStationsManagementService {
             .on(value: { [weak self] data in
                 let chargerStations = data.map { ChargerStationObject(with: $0) }
                 self?.chargerStations.value = chargerStations
-                self?.saveToCoreData(chargerStations: chargerStations)                
-            })
-            .on(completed: { [weak self] in
-                self?.getChargers()
-        }).start()
+            }).start()
     }
     
     private func saveToCoreData(chargerStations: [ChargerStationObject]) {
@@ -68,11 +64,12 @@ class ChargerStationsManagementService {
             .observe(on: self.scheduler)
             .on(failed: { (error) in
                 print(error)
-            }, value: { [weak self] (stations) in
+            },
+            value: { [weak self] (stations) in
                 let stationObjects = stations.compactMap { (station) -> ChargerStationObject? in
                     ChargerStationObject(chargerObject: station)
                 }
-//                self?.chargerStations.value = stationObjects
+                self?.chargerStations.value = stationObjects
             }).start()
     }
 }

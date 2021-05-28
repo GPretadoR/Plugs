@@ -13,7 +13,7 @@ import GoogleMapsDirections
 import CoreLocation
 import ReactiveSwift
 
-protocol MainViewCoordinatorDelegate: class {
+protocol MainViewCoordinatorDelegate: AnyObject {
     func didTapSideMenuButton()
     func openDetailsPage(charger: ChargerStationObject)
 }
@@ -61,7 +61,7 @@ class MainViewViewModel: BaseViewModel {
             .observeValues { [weak self] location in
                 self?.changeCameraLocation(location: location.coordinate)
                 self?.calculateRegions(geoRegions: self?.allGeoRegionObjects ?? [])
-        }
+            }
         
         context.services.locationService
             .didEnterRegionObserver
@@ -101,8 +101,11 @@ class MainViewViewModel: BaseViewModel {
     }
     
     private func calculateRegions(geoRegions: [GeoRegionObject]) {
-        let circularRegions = context.services.locationService.prepareCircularRegions(geoRegions: geoRegions)
-        context.services.locationService.startMonitoring(regions: circularRegions)
+        if geoRegions.count != 0 {
+            let circularRegions = context.services.locationService.prepareCircularRegions(geoRegions: geoRegions)            
+            context.services.locationService.stopMonitoring(regions: circularRegions)
+            context.services.locationService.startMonitoring(regions: circularRegions)
+        }
     }
     
     private func changeCameraLocation(location: CLLocationCoordinate2D) {
@@ -115,16 +118,24 @@ class MainViewViewModel: BaseViewModel {
     private func handleRegionExit() {
         let timeDiff = Date().timeIntervalSince(regionEntryTime)
         if timeDiff > 15 * 60 {
-            // Do request to firebases
+            let testData: [String: Any] = ["name": "Garnik Hayat",
+                                           "age": 32,
+                                           "location": GeoPoint(latitude: 40.533, longitude: 44.222),
+                                           "date": Timestamp(date: Date())]
+            context.services.firestoreService
+                .sendData(fields: testData)
+                .on(value: { result in
+                print(result)
+            }).start()
+            print("and exited REGION")
         }
+        print("ENTERRED REGION")
     }
     
     private func handleChargersResponse(chargerStations: [ChargerStationObject]) {
         chargers = chargerStations
         markers.value = createMarkers(chargerStations: chargerStations)
-        var geoRegions = chargerStations.compactMap { $0.geoRegion }
-        let testRegion = GeoRegionObject(identifier: "Garnik", coordinates: GeoPoint(latitude: 40.192165, longitude: 44.531235), radius: 200.0)
-        geoRegions.append(testRegion)
+        let geoRegions = chargerStations.compactMap { $0.geoRegion }
         allGeoRegionObjects = geoRegions
         calculateRegions(geoRegions: geoRegions)
     }
@@ -134,4 +145,11 @@ extension CLLocationCoordinate2D {
     var googleLocationCoordinate2D: GoogleMapsDirections.LocationCoordinate2D {
         GoogleMapsDirections.LocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
+}
+
+enum RoutingPage {
+    case commingSoon
+    case howToRide
+    case reportAProblem
+    case scanQr
 }

@@ -40,9 +40,26 @@ class FirebaseManagementServiceProvider {
         }
     }
     
-    func addData(to collection: String, with document: String, fields: [String: Any]) -> SignalProducer<String, Error> {
+    func addData(to collection: String, fields: [String: Any]) -> SignalProducer<String, Error> {
         return SignalProducer { [weak self] (observer, lifetime) in
             self?.ref = self?.db.collection(collection).addDocument(data: fields, completion: { [weak self] error in
+                if let error = error {
+                    observer.send(error: error)
+                } else {
+                    if let documentId = self?.ref?.documentID {
+                        observer.send(value: documentId)
+                        observer.sendCompleted()
+                    } else {
+                        observer.sendInterrupted()
+                    }
+                }
+            })
+        }
+    }
+    
+    func updateData(to collection: String, with document: String, fields: [String: Any]) -> SignalProducer<String, Error> {
+        return SignalProducer { [weak self] (observer, lifetime) in
+            self?.db.collection(collection).document(document).setData(fields, completion: { error in
                 if let error = error {
                     observer.send(error: error)
                 } else {

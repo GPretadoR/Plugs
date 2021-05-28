@@ -7,3 +7,23 @@
 //
 
 import Foundation
+
+protocol FAQViewCoordinatorDelegate: AnyObject {
+    func didTapCloseButton()
+}
+
+class FAQViewViewModel: BaseViewModel {
+
+    weak var coordinatorDelegate: FAQViewCoordinatorDelegate?
+    private let context: Context
+
+    init(context: Context, coordinatorDelegate: FAQViewCoordinatorDelegate) {
+        self.context = context
+        self.coordinatorDelegate = coordinatorDelegate
+        super.init()
+    }
+    
+    func didTapCloseButton() {
+        coordinatorDelegate?.didTapCloseButton()
+    }
+}

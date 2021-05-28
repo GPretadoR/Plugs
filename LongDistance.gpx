@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<gpx version="1.1" creator="Xcode">
+  <wpt lat="40.17496011659722" lon="44.50959986058059">
+    <name>Apple</name>
+    <time>2014-09-24T14:00:00Z</time>
+  </wpt>
+  <wpt lat="40.178894883138256" lon="44.513215478358944">
+    <name>Google</name>
+    <time>2014-09-24T14:00:05Z</time>
+  </wpt>
+  <wpt lat="40.17640289085425" lon="44.51538270326065">
+    <name>Google</name>
+    <time>2014-09-24T14:00:05Z</time>
+  </wpt>
+  <wpt lat="40.179222770046486" lon="44.514095242923005">
+    <name>Google</name>
+    <time>2014-09-24T14:00:05Z</time>
+  </wpt>
+  <wpt lat="40.18364908830296" lon="44.523418601484856">
+    <name>Google</name>
+    <time>2014-09-24T14:00:05Z</time>
+  </wpt>
+</gpx>

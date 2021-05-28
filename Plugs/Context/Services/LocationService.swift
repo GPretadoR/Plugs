@@ -33,6 +33,13 @@ class LocationService {
         serviceProvider.didExitRegionObserver
     }
     
+    var monitoredRegions: [CLCircularRegion] {
+        serviceProvider.monitoredRegions.compactMap { region -> CLCircularRegion? in
+            guard let circular = region as? CLCircularRegion else { return nil }
+            return circular
+        }
+    }
+    
     init(serviceProvider: LocationServiceProvider) {
         self.serviceProvider = serviceProvider
     }
@@ -45,6 +52,10 @@ class LocationService {
         serviceProvider.stopMonitoringRegions(regions: regions)
     }
     
+    func clearMonitoredRegions() {
+        serviceProvider.clearMonitoredRegions()
+    }
+
     func prepareCircularRegions(geoRegions: [GeoRegionObject]) -> [CLCircularRegion] {
         let sorted = geoRegions.sorted { first, second -> Bool in
             var firstDistance = 0.0
@@ -68,14 +79,6 @@ class LocationService {
                 return circle
             }
             return nil
-        }
-    }
-    
-    func getCountryOfLocation(location: CLLocation) {
-        let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            guard let currentLocPlacemark = placemarks?.first else { return }
-//            Current.loginSession.user?.country = currentLocPlacemark.isoCountryCode            
         }
     }
 }

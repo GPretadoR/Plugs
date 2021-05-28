@@ -7,3 +7,23 @@
 //
 
 import Foundation
+
+protocol AboutUsViewCoordinatorDelegate: AnyObject {
+    func didTapCloseButton()
+}
+
+class AboutUsViewViewModel: BaseViewModel {
+
+    weak var coordinatorDelegate: AboutUsViewCoordinatorDelegate?
+    private let context: Context
+
+    init(context: Context, coordinatorDelegate: AboutUsViewCoordinatorDelegate) {
+        self.context = context
+        self.coordinatorDelegate = coordinatorDelegate
+        super.init()
+    }
+    
+    func didTapCloseButton() {
+        coordinatorDelegate?.didTapCloseButton()
+    }
+}

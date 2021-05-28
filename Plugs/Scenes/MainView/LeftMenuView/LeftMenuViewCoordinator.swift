@@ -57,7 +57,7 @@ extension LeftMenuViewCoordinator: Presentable {
 
 extension LeftMenuViewCoordinator: LeftMenuViewCoordinatorDelegate {
     func didSelectCell(type: LeftMenuCellType) {
-
+        handleCellTap(type: type)
     }
 
     func didTapProfileButton() {
@@ -67,34 +67,22 @@ extension LeftMenuViewCoordinator: LeftMenuViewCoordinatorDelegate {
     }
 
     private func handleCellTap(type: LeftMenuCellType) {
-        /*
         switch type {
-        case .wallet:
-            let walletViewCoordinator = WalletViewCoordinator(coordinator: self)
-            addChildCoordinator(walletViewCoordinator)
-            walletViewCoordinator.start()
-        case .rideHistory:
-            let rideHistoryCoordinator = RideHistoryViewCoordinator(coordinator: self)
-            addChildCoordinator(rideHistoryCoordinator)
-            rideHistoryCoordinator.start()
-        case .howToRide:
-            let howToRideCoordinator = SelectHowToRideOptionViewCoordinator(coordinator: self, canBeSkipped: true)
-            addChildCoordinator(howToRideCoordinator)
-            howToRideCoordinator.start()
-        case .settings:
-            let settingsViewCoordinator = SettingsViewCoordinator(coordinator: self)
-            addChildCoordinator(settingsViewCoordinator)
-            settingsViewCoordinator.start()
-        case .helpAndSupport:
-            let helpAndSupportViewCoordinator = HelpAndSupportViewCoordinator(coordinator: self)
-            addChildCoordinator(helpAndSupportViewCoordinator)
-            helpAndSupportViewCoordinator.start()
-        case .reportAProblem:
-            let reportAProblemOptionsCoordinator = ReportAProblemOptionsViewCoordinator(coordinator: self)
-            addChildCoordinator(reportAProblemOptionsCoordinator)
-            reportAProblemOptionsCoordinator.start()
+        case .aboutUs:
+            let aboutUsCoordinator = AboutUsViewCoordinator(coordinator: self)
+            addChildCoordinator(aboutUsCoordinator)
+            aboutUsCoordinator.start()
+        case .donors:
+            let donorsCoordinator = DonorsViewCoordinator(coordinator: self)
+            addChildCoordinator(donorsCoordinator)
+            donorsCoordinator.start()
+        case .faq:
+            let faqCoordinator = FAQViewCoordinator(coordinator: self)
+            addChildCoordinator(faqCoordinator)
+            faqCoordinator.start()
+        default:
+            break
         }
-         */
     }
 }
 

@@ -10,7 +10,7 @@ import CoreLocation
 import Foundation
 import ReactiveSwift
 
-protocol ChargerDetailViewCoordinatorDelegate: class {
+protocol ChargerDetailViewCoordinatorDelegate: AnyObject {
     func didTapSideMenuButton()
     func openDirections(to coordinate: CLLocationCoordinate2D)
 }
