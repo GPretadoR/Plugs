@@ -39,4 +39,9 @@ extension AboutUsViewCoordinator: AboutUsViewCoordinatorDelegate {
     func didTapCloseButton() {
         dismissModal(animated: true)
     }
+
+    func openPlugAM() {
+        guard let url = URL(string: AppEnvironment.current.facebookURL) else { return }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
 }

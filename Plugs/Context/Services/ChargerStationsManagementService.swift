@@ -24,16 +24,17 @@ class ChargerStationsManagementService {
         self.fireStoreService = fireStoreService
         self.configure()
     }
+
     private func configure() {
         UIApplication.reactive
             .didBecomeActive
             .take(duringLifetimeOf: self)
             .observeValues { [weak self] in
-                self?.fetchFromFirebase()
+//                self?.fetchFromFirebase()
         }
     }
     
-    private func fetchFromFirebase() {
+    func fetchFromFirebase() {
         fireStoreService.fetchData(collection: "stations").observe(on: scheduler)
             .on(value: { [weak self] data in
                 let chargerStations = data.map { ChargerStationObject(with: $0) }

@@ -29,6 +29,15 @@ class AboutUsViewController: BaseViewController {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
         addCloseButton(on: self, action: #selector(closeButtonTapped(_:)))
+        
+        let text = R.string.localizable.donorsDescriptionText.localized()
+        let attributedText = NSMutableAttributedString(string: text)
+        desctiptionLabel.attributedText = attributedText.setSubstringAsLink(substring: "Plug.am", linkURL: Current.environment.facebookURL)
+        
+        desctiptionLabel.isUserInteractionEnabled = true
+        let tapgesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnLabel(_ :)))
+        tapgesture.numberOfTapsRequired = 1
+        desctiptionLabel.addGestureRecognizer(tapgesture)
     }
     
     override func setupView() {
@@ -119,6 +128,14 @@ class AboutUsViewController: BaseViewController {
     }
     
     // MARK: - Actions
+    
+    @objc func didTapOnLabel(_ gesture: UITapGestureRecognizer) {
+        if let range = (desctiptionLabel.text as NSString?)?.range(of: "Plug.am") {
+            if gesture.didTapAttributedTextInLabel(label: desctiptionLabel, inRange: range) {
+                viewModel?.didTapPlugAmLink()
+            }
+        }
+    }
     
     @objc func closeButtonTapped(_ sender: Any) {
         viewModel?.didTapCloseButton()

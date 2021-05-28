@@ -63,9 +63,6 @@ extension LeftMenuViewCoordinator: LeftMenuViewCoordinatorDelegate {
     func didTapProfileButton() {
     }
 
-    private func showLoginView() {
-    }
-
     private func handleCellTap(type: LeftMenuCellType) {
         switch type {
         case .aboutUs:
@@ -83,6 +80,13 @@ extension LeftMenuViewCoordinator: LeftMenuViewCoordinatorDelegate {
         default:
             break
         }
+    }
+    
+    func closeToMainView() {
+        guard let context = context else { return }
+        let mainViewCoordinator = MainViewCoordinator(context: context, window: UIApplication.shared.windows.first ?? UIWindow(frame: UIScreen.main.bounds))
+        changeCoordinatorsRoot(coordinator: mainViewCoordinator)
+        mainViewCoordinator.start()
     }
 }
 

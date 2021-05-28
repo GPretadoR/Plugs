@@ -13,6 +13,8 @@ class LocationService {
     
     private let serviceProvider: LocationServiceProvider
     
+    var allGeoRegionObjects: [GeoRegionObject] = []
+    
     var currentLocation: MutableProperty<CLLocation> {
         serviceProvider.currentLocation
     }
@@ -56,7 +58,25 @@ class LocationService {
         serviceProvider.clearMonitoredRegions()
     }
 
+    var nearestCharger: GeoRegionObject? {
+        let sortedRegions = sortGeoRegions(geoRegions: allGeoRegionObjects)
+        return sortedRegions.first
+    }
+    
     func prepareCircularRegions(geoRegions: [GeoRegionObject]) -> [CLCircularRegion] {
+        let dropped = sortGeoRegions(geoRegions: geoRegions)
+        return dropped.compactMap { geoRegion -> CLCircularRegion? in
+            if let center = geoRegion.coordinate2D, let radius = geoRegion.radius, let id = geoRegion.identifier {
+                let circle = CLCircularRegion(center: center, radius: radius, identifier: id)
+                circle.notifyOnEntry = true
+                circle.notifyOnExit = true
+                return circle
+            }
+            return nil
+        }
+    }
+    
+    private func sortGeoRegions(geoRegions: [GeoRegionObject]) -> [GeoRegionObject] {
         let sorted = geoRegions.sorted { first, second -> Bool in
             var firstDistance = 0.0
             var secondDistance = 0.0
@@ -69,17 +89,8 @@ class LocationService {
             return firstDistance < secondDistance
         }
         let dropCount = sorted.count > 20 ? sorted.count - 20 : 0
-        let dropped = sorted.dropLast(dropCount)
-        
-        return dropped.compactMap { geoRegion -> CLCircularRegion? in
-            if let center = geoRegion.coordinate2D, let radius = geoRegion.radius, let id = geoRegion.identifier {
-                let circle = CLCircularRegion(center: center, radius: radius, identifier: id)
-                circle.notifyOnEntry = true
-                circle.notifyOnExit = true
-                return circle
-            }
-            return nil
-        }
+        let dropped = sorted.dropLast(dropCount) as [GeoRegionObject]
+        return dropped
     }
 }
 

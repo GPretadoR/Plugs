@@ -76,5 +76,4 @@ extension MapView: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
         return nil
     }
-    
 }

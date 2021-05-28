@@ -30,11 +30,12 @@ class MainViewViewModel: BaseViewModel {
     
     var markers = MutableProperty<[ChargerMarker]>([])
     var chargers: [ChargerStationObject] = []
-    var allGeoRegionObjects: [GeoRegionObject] = []
     
-    private var initialCameraMove = true
+    var initialCameraMove = true
     private let initialZoomLevel: Float = 17.0
     private var regionEntryTime = Date()
+    
+    private var regionObserverQueue = QueueScheduler(qos: .background, name: "locationObserver", targeting: DispatchQueue.global())
     
     init(context: Context, coordinatorDelegate: MainViewCoordinatorDelegate) {
         self.context = context
@@ -58,9 +59,10 @@ class MainViewViewModel: BaseViewModel {
     private func setupReactiveComponents() {
         context.services.locationService
             .locationObserver
+            .observe(on: regionObserverQueue)
             .observeValues { [weak self] location in
                 self?.changeCameraLocation(location: location.coordinate)
-                self?.calculateRegions(geoRegions: self?.allGeoRegionObjects ?? [])
+                self?.calculateRegions(geoRegions: self?.context.services.locationService.allGeoRegionObjects ?? [])
             }
         
         context.services.locationService
@@ -71,14 +73,11 @@ class MainViewViewModel: BaseViewModel {
         
         context.services.locationService
             .didExitRegionObserver
+            .observe(on: regionObserverQueue)
             .observeValues { [weak self] region in
                 self?.handleRegionExit()
             }
         
-        fetchChargers()
-    }
-    
-    private func fetchChargers() {
         context.services.chargerStationsManagementService
             .chargerStations
             .signal
@@ -86,6 +85,8 @@ class MainViewViewModel: BaseViewModel {
             .observeValues { [weak self] chargerStations in
                 self?.handleChargersResponse(chargerStations: chargerStations)
         }
+        
+        context.services.chargerStationsManagementService.fetchFromFirebase()
     }
     
     private func createMarkers(chargerStations: [ChargerStationObject]) -> [ChargerMarker] {
@@ -110,7 +111,6 @@ class MainViewViewModel: BaseViewModel {
     
     private func changeCameraLocation(location: CLLocationCoordinate2D) {
         if initialCameraMove {
-            initialCameraMove = false
             moveCameraToLocation.value = (location, initialZoomLevel)
         }
     }
@@ -118,25 +118,24 @@ class MainViewViewModel: BaseViewModel {
     private func handleRegionExit() {
         let timeDiff = Date().timeIntervalSince(regionEntryTime)
         if timeDiff > 15 * 60 {
-            let testData: [String: Any] = ["name": "Garnik Hayat",
-                                           "age": 32,
-                                           "location": GeoPoint(latitude: 40.533, longitude: 44.222),
-                                           "date": Timestamp(date: Date())]
+            let title = chargers.first(where: { $0.name == context.services.locationService.nearestCharger?.identifier })
+            let testData: [String: Any] = ["chargerName": title  ?? "Charger",
+                                           "timeSpent": timeDiff,
+                                           "deviceType": "iOS",
+                                           "chargeDate": Timestamp(date: Date())]
             context.services.firestoreService
                 .sendData(fields: testData)
                 .on(value: { result in
                 print(result)
             }).start()
-            print("and exited REGION")
         }
-        print("ENTERRED REGION")
     }
     
     private func handleChargersResponse(chargerStations: [ChargerStationObject]) {
         chargers = chargerStations
         markers.value = createMarkers(chargerStations: chargerStations)
         let geoRegions = chargerStations.compactMap { $0.geoRegion }
-        allGeoRegionObjects = geoRegions
+        context.services.locationService.allGeoRegionObjects = geoRegions
         calculateRegions(geoRegions: geoRegions)
     }
 }

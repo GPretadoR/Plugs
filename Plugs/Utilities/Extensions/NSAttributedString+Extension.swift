@@ -10,12 +10,12 @@ import Foundation
 
 extension NSMutableAttributedString {
     // Set part of string as URL
-    public func setSubstringAsLink(substring: String, linkURL: String) -> Bool {
+    public func setSubstringAsLink(substring: String, linkURL: String) -> NSMutableAttributedString {
         let range = mutableString.range(of: substring)
         if range.location != NSNotFound {
             addAttribute(NSAttributedString.Key.link, value: linkURL, range: range)
-            return true
+            return self
         }
-        return false
+        return self
     }
 }

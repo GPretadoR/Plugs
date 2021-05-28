@@ -14,6 +14,7 @@ class ChargerDetailsViewController: BaseViewController {
     
     private lazy var chargerImageView = AppImageView {
         $0.backgroundColor = .clear
+        $0.image = R.image.noImage()
     }
     
     private lazy var chargerInfoView = ChargerInfoView()
@@ -116,8 +117,11 @@ class ChargerDetailsViewController: BaseViewController {
     private func updateView(charger: ChargerStationObject) {
         let chargerInfo = ChargerInfoViewModel(chargerName: charger.name ?? "", chargerTypes: charger.plugType ?? "", availabilityHours: "24/7")
         chargerInfoView.configure(chargerInfo: chargerInfo)
-        DispatchQueue.main.async {
-            self.chargerImageView.image = self.viewModel?.getChargerImage(urlString: charger.photoURL ?? "")
+        DispatchQueue.global().async {
+            let image = self.viewModel?.getChargerImage(urlString: charger.photoURL ?? "")
+            DispatchQueue.main.async {
+                self.chargerImageView.image = image
+            }
         }
         addressLabel.text = charger.city
     }

@@ -85,6 +85,7 @@ class MainViewController: BaseViewController {
             .take(duringLifetimeOf: self)
             .observeValues { [weak self] (location, zoomLevel) in
                 self?.mapView.moveCamera(toLocation: location, zoomLevel: zoomLevel)
+                viewModel.initialCameraMove = false //Very bad workaround
             }
     }
     

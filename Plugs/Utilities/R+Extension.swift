@@ -28,7 +28,10 @@ extension R {
     static var defaultLanguage: Languages {
         get {
             guard let lang = UserDefaults.standard.value(forKey: "AppleLanguage") as? String else {
-                return .en
+                let code = Locale.preferredLanguages[0]
+                let language = Languages(rawValue: code) ?? .en
+                R.setDefaultLanguage(language)
+                return language
             }
             return Languages(rawValue: lang) ?? .en
         }

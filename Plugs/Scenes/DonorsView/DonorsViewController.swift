@@ -6,6 +6,7 @@
 //  Copyright © 2021 Garnik Ghazaryan. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
 class DonorsViewController: BaseViewController {
@@ -16,7 +17,6 @@ class DonorsViewController: BaseViewController {
     
     private lazy var desctiptionLabel = AppLabel {
         $0.style(textStyle: .regular16px, color: R.color.grayTextColor()!)
-        $0.text = R.string.localizable.aboutUsViewDescriptionText.localized()
         $0.numberOfLines = 0
         $0.lineBreakMode = .byWordWrapping
     }
@@ -25,6 +25,15 @@ class DonorsViewController: BaseViewController {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
         addCloseButton(on: self, action: #selector(closeButtonTapped(_:)))
+        
+        let text = R.string.localizable.donorsDescriptionText.localized()
+        let attributedText = NSMutableAttributedString(string: text)
+        desctiptionLabel.attributedText = attributedText.setSubstringAsLink(substring: "Plug.am", linkURL: Current.environment.facebookURL)
+        
+        desctiptionLabel.isUserInteractionEnabled = true
+        let tapgesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnLabel(_ :)))
+        tapgesture.numberOfTapsRequired = 1
+        desctiptionLabel.addGestureRecognizer(tapgesture)
     }
     
     override func setupView() {
@@ -106,6 +115,14 @@ class DonorsViewController: BaseViewController {
 
     // MARK: - Actions
 
+    @objc func didTapOnLabel(_ gesture: UITapGestureRecognizer) {
+        if let range = (desctiptionLabel.text as NSString?)?.range(of: "Plug.am") {
+            if gesture.didTapAttributedTextInLabel(label: desctiptionLabel, inRange: range) {
+                viewModel?.didTapPlugAmLink()
+            }
+        }
+    }
+    
     @objc func closeButtonTapped(_ sender: Any) {
         viewModel?.didTapCloseButton()
     }

@@ -17,9 +17,17 @@ class CommonTableViewCell: BaseView {
     }
     var titleTextLabel = AppLabel {
         $0.style(textStyle: .regular15px, color: R.color.grayTextColor()!)
+        $0.numberOfLines = 0
+        $0.sizeToFit()
     }
 
     var accessoryView: UIView? {
+        willSet {
+            if newValue == nil {
+                accessoryView?.removeFromSuperview()
+            }
+        }
+        
         didSet {
             setupAccessoryView()
         }
@@ -40,6 +48,7 @@ class CommonTableViewCell: BaseView {
         titleTextLabel.snp.makeConstraints { make in
             make.leading.equalTo(iconImageView.snp.trailing).offset(15)
             make.centerY.equalTo(iconImageView.snp.centerY)
+            make.trailing.equalTo(-8)
         }
     }
 
@@ -49,7 +58,7 @@ class CommonTableViewCell: BaseView {
 
     func configure(icon: UIImage?, titleText: String, additionalText: String?) {
         iconImageView.image = icon
-        titleTextLabel.text = titleText.uppercased()
+        titleTextLabel.text = titleText
         if icon == nil {
             iconImageView.snp.updateConstraints { make in
                 make.width.equalTo(0)
@@ -58,6 +67,7 @@ class CommonTableViewCell: BaseView {
                 titleTextLabel.snp.remakeConstraints { make in
                     make.leading.equalTo(iconImageView.snp.trailing).offset(15)
                     make.centerY.equalToSuperview()
+                    make.trailing.equalTo(-8)
                 }
             }
         }
@@ -65,6 +75,19 @@ class CommonTableViewCell: BaseView {
 
     func configure(titleText: String) {
         configure(icon: nil, titleText: titleText)
+    }
+    
+    func makeResizable() {
+        titleTextLabel.snp.remakeConstraints { [weak self] make in
+            make.leading.equalTo(iconImageView.snp.trailing).offset(15)
+            make.top.equalToSuperview().offset(16)
+            make.bottom.equalToSuperview().offset(-16)
+            if let accessoryView = self?.accessoryView {
+                make.trailing.lessThanOrEqualTo(accessoryView.snp.leading).offset(-8)
+            } else {
+                make.trailing.equalToSuperview().offset(-8)
+            }
+        }
     }
 
     private func setupAccessoryView() {
@@ -74,7 +97,7 @@ class CommonTableViewCell: BaseView {
         accessoryView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().offset(-21)
-            make.leading.equalTo(titleTextLabel.snp.trailing).offset(10)
         }
+        makeResizable()
     }
 }

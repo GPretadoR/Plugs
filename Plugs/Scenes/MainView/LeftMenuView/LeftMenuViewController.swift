@@ -6,18 +6,22 @@
 //  Copyright © 2020 Garnik Ghazaryan. All rights reserved.
 //
 
-import UIKit
+import ReactiveCocoa
 import ReactiveSwift
+import UIKit
 
 class LeftMenuViewController: BaseViewController {
 
     private lazy var leftMenuTableView = UITableView {
-        $0.registerReusableCell(GenericTableViewCell<CommonTableViewCell>.self)
-        $0.tableFooterView = UIView()
+        $0.registerReusableCell(GenericTableViewCell<CommonTableViewCell>.self)        
         $0.isScrollEnabled = false
     }
 
     private lazy var headerView = LeftMenuHeaderView()
+    
+    private var toggleView = LanguageToggleView {
+        $0.configure(leftTitle: "Հայ", rightTitle: "Eng")
+    }
 
     var viewModel: LeftMenuViewViewModel?
 
@@ -35,6 +39,7 @@ class LeftMenuViewController: BaseViewController {
     }
 
     override func setupView() {
+        super.setupView()
         view.backgroundColor = .white
         
         view.addSubview(leftMenuTableView)
@@ -55,6 +60,22 @@ class LeftMenuViewController: BaseViewController {
 
     }
     
+    override func setupViewModel() {
+        super.setupViewModel()
+        guard let viewModel = viewModel else { return }
+        
+        toggleView.toggleDidChangeValue = { isOn in
+            viewModel.didSwitchToggle(isOn: isOn)
+        }
+        
+        viewModel.toggleState
+            .signal
+            .observe(on: UIScheduler())
+            .observeValues { [weak self] isOn in
+                self?.toggleView.setToggleState(isOn: isOn)
+            }
+    }
+    
     // MARK: - Actions -
 
     // MARK: - Helpers -
@@ -69,6 +90,23 @@ class LeftMenuViewController: BaseViewController {
 }
 
 extension LeftMenuViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.addSubview(toggleView)
+        
+        toggleView.snp.makeConstraints { make in
+            make.top.equalTo(16)
+            make.bottom.equalToSuperview()
+            make.leading.equalTo(20)
+        }
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 60
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel?.menuItems.value.count ?? 0
     }
@@ -78,7 +116,7 @@ extension LeftMenuViewController: UITableViewDataSource {
 
         if let menuItems = viewModel?.menuItems.value {
             let menuItem = menuItems[indexPath.row]
-            cell.view.configure(icon: menuItem.icon, titleText: menuItem.titleText)
+            cell.view.configure(icon: menuItem.icon, titleText: menuItem.titleText.uppercased())
         }
 
         cell.selectionStyle = .none

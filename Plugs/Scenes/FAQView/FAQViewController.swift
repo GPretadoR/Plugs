@@ -6,6 +6,8 @@
 //  Copyright © 2021 Garnik Ghazaryan. All rights reserved.
 //
 
+import ReactiveCocoa
+import ReactiveSwift
 import UIKit
 
 class FAQViewController: BaseViewController {
@@ -13,6 +15,8 @@ class FAQViewController: BaseViewController {
     var viewModel: FAQViewViewModel?
     
     private lazy var headerView = CommonHeaderView()
+    
+    private var faqData: [TableViewData] = []
     
     private lazy var faqTableView = UITableView {
         $0.registerReusableCell(GenericTableViewCell<CommonTableViewCell>.self)
@@ -25,7 +29,6 @@ class FAQViewController: BaseViewController {
         addCloseButton(on: self, action: #selector(closeButtonTapped(_:)))
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        tableViewDataArray = baseData
         faqTableView.dataSource = self
         faqTableView.delegate = self
     }
@@ -51,6 +54,16 @@ class FAQViewController: BaseViewController {
         headerView.configureTitle(text: R.string.localizable.faqTitleText.localized())
     }
     
+    override func setupViewModel() {
+        super.setupViewModel()
+        guard let viewModel = viewModel else { return }
+        
+        reactive.makeBindingTarget { (localSelf, data) in
+            localSelf.faqData = data
+            localSelf.faqTableView.reloadData()
+        } <~ viewModel.faqDataModel
+    }
+    
     override func shouldHaveBottomLogo() -> Bool {
         true
     }
@@ -60,79 +73,56 @@ class FAQViewController: BaseViewController {
     @objc func closeButtonTapped(_ sender: Any) {
         viewModel?.didTapCloseButton()
     }
-    
-    var baseData = [TableViewData(title: "a", data: [TableViewData(title: "a1", data: [TableViewData(title: "a11", data: [])])], isRoot: true),
-                    TableViewData(title: "b", data: [TableViewData(title: "b1", data: [TableViewData(title: "b11", data: [TableViewData(title: "b111", data: [])]),
-                                                                                       TableViewData(title: "b22", data: [])])], isRoot: true)]
-    var tableViewDataArray: [TableViewData] = []
-}
-
-class TableViewData {
-    let title: String
-    var isExpanded: Bool = false
-    var data: [TableViewData]
-    var isRoot: Bool = false
-    
-    init(title: String, data: [TableViewData]) {
-        self.title = title
-        self.data = data
-    }
-    
-    init(title: String, data: [TableViewData], isRoot: Bool) {
-        self.title = title
-        self.data = data
-        self.isRoot = isRoot
-    }
-    
-    func collapse() {
-        for item in data {
-            item.collapse()
-        }
-    }
 }
 
 extension FAQViewController: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        faqData.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableViewDataArray.count
+        let sectionData = faqData[section]
+        if sectionData.isExpanded {
+            return sectionData.data.count + 1
+        } else {
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(GenericTableViewCell<CommonTableViewCell>.self, for: indexPath)
-        
-        let menuItem = tableViewDataArray[indexPath.row]
-        cell.view.configure(icon: nil, titleText: menuItem.title)
-        
-        cell.selectionStyle = .none
-        
+        cell.view.accessoryView = nil
+        if indexPath.row == 0 {
+            let sectionData = faqData[indexPath.section]
+            cell.view.configure(titleText: sectionData.title)
+            cell.view.accessoryView = makeArrowImage(isExpanded: sectionData.isExpanded)
+        } else {
+            cell.view.configure(titleText: faqData[indexPath.section].data[indexPath.row - 1])
+            cell.view.makeResizable()
+        }
+        cell.view.backgroundColor = .white
         return cell
+    }
+    
+    private func makeArrowImage(isExpanded: Bool) -> UIView {
+        let imageView = UIImageView(image: R.image.expandArrow())
+        if isExpanded {
+            let rotatedImageView = imageView.transform.rotated(by: .pi)
+            imageView.transform = rotatedImageView
+        }
+        return imageView
     }
 }
 
 extension FAQViewController: UITableViewDelegate {
-    
-    func updateDataSource() {
-        tableViewDataArray = tableViewDataArray.filter { $0.isExpanded || $0.isRoot }
-        if tableViewDataArray.isEmpty {
-            tableViewDataArray = baseData
-        }
-        faqTableView.reloadData()
-    }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let menuItem = tableViewDataArray[indexPath.row]
-        if menuItem.isExpanded {
-            menuItem.collapse()
-            updateDataSource()
-        } else {
-            menuItem.isExpanded = true
-            
-            let items = menuItem.data
-            var insertingIndex = indexPath.row + 1
-            for i in 0..<items.count {
-                tableViewDataArray.insert(items[i], at: insertingIndex)
-                insertingIndex += 1
-            }
-            tableView.reloadData()
+        tableView.deselectRow(at: indexPath, animated: false)
+        
+        if indexPath.row == 0 {
+            faqData[indexPath.section].isExpanded = !faqData[indexPath.section].isExpanded
+            tableView.reloadSections([indexPath.section], with: .none)
         }
     }
 }

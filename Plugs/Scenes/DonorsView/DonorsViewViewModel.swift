@@ -10,6 +10,7 @@ import Foundation
 
 protocol DonorsViewCoordinatorDelegate: AnyObject {
     func didTapCloseButton()
+    func openPlugAM()
 }
 
 class DonorsViewViewModel: BaseViewModel {
@@ -25,5 +26,9 @@ class DonorsViewViewModel: BaseViewModel {
     
     func didTapCloseButton() {
         coordinatorDelegate?.didTapCloseButton()
+    }
+    
+    func didTapPlugAmLink() {
+        coordinatorDelegate?.openPlugAM()
     }
 }

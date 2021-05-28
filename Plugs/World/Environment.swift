@@ -27,6 +27,7 @@ protocol Environment {
 //    var appGroup: String { get }
 //    var appURLScheme: String { get }
  
+    var facebookURL: String { get }
     var googleMapConfig: GoogleConfig { get }
 //    var googleSignInClientIdConfig: GoogleConfig { get }
 }
@@ -78,6 +79,10 @@ enum AppEnvironment: Environment {
         case .production:
             return GoogleConfig(apiKey: "AIzaSyDUfvAL6LGQ80K-jqW1u6dBaL0Zwfnhb3A")
         }
+    }
+    
+    var facebookURL: String {
+        "https://www.facebook.com/EVplug.am/"
     }
 }
 
